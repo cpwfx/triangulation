@@ -1,5 +1,9 @@
 package 
 {
+	import blaze.math.Intersect;
+	import display.Beacon;
+	import display.Intersection;
+	import display.Receiver;
 	import flash.display.Sprite;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
@@ -17,14 +21,14 @@ package
 		private var intersections:Vector.<Intersection> = new Vector.<Intersection>();
 		private var margin:Point = new Point(350, 250);
 		private var receiver:Receiver;
-		private var fractionErrors:Vector.<Number> = new <Number>[0.2,0.2,0.2,0.9];
-		private var count:int = -1;
-		private var t:int = 10;
+		private var fractionErrors:Vector.<Number> = new <Number>[0.0,0.0,0.0,0.0];
+		private var updateEveryXFramesCount:int = -1;
+		private var updateEveryXFrames:int = 10;
 		private var averageIntersection:Intersection;
 		private var averageIntersectionTarget:Vector3D = new Vector3D();
 		private var crossProductSmoothing:int = 10;
 		private var signalSmoothing:int = 10;
-		private var intersect:Intersect;
+		private var intersect:Intersect = new Intersect();
 		
 		public function Main():void 
 		{
@@ -44,12 +48,9 @@ package
 			createBeacon(new Vector3D(stage.stageWidth - margin.x, stage.stageHeight - margin.y, 0));
 			createBeacon(new Vector3D(margin.x, stage.stageHeight - margin.y, 0));
 			
-			intersect = new Intersect();
-			
 			createReceiver();
 			createIntersections();
 			createAverageIntersection();
-			
 			
 			addEventListener(Event.ENTER_FRAME, Update);
 			//stage.addEventListener(MouseEvent.CLICK, OnClick);
@@ -105,32 +106,27 @@ package
 		
 		private function findCrossProduct():void 
 		{
-			count++;
-			
-			if (count % t != 0) return;
+			updateEveryXFramesCount++;
+			if (updateEveryXFramesCount % updateEveryXFrames != 0) return;
 			
 			//averageIntersectionTarget = intersect.triangulate(beacons[0].position, beacons[1].position, beacons[2].position);
 			//averageIntersectionTarget = intersect.quadulate(beacons[0].position, beacons[1].position, beacons[2].position, beacons[3].position);
-			var vec1:Vector.<Vector3D> = new Vector.<Vector3D>(beacons.length, true);
+			var vec:Vector.<Vector3D> = new Vector.<Vector3D>(beacons.length, true);
 			for (var m:int = 0; m < beacons.length; m++) 
 			{
-				vec1[m] = beacons[m].position;
+				vec[m] = beacons[m].position;
 			}
 			
-			averageIntersectionTarget = intersect.of(vec1);
+			averageIntersectionTarget = intersect.of(vec);
 			
 			for (var j:int = 0; j < intersections.length; j++) 
 			{
-				intersections[j].position = intersect.intersections[j].position;
+				intersections[j].position = intersect.intersections[j];
 			}
-			/*intersections[0].position = intersect.intersections[0].position;
-			intersections[1].position = intersect.intersections[1].position;
-			intersections[2].position = intersect.intersections[2].position;*/
 			
 			for (var i:int = 0; i < intersect.intersections.length; i++) 
 			{
 				var beacon:Beacon = beacons[i];
-				//beacon.clear();
 				beacon.setRadius(intersect.points[i].w, true);
 			}
 		}
@@ -142,9 +138,6 @@ package
 				var difPoint:Vector3D = new Vector3D(beacons[i].x - receiver.x, beacons[i].y - receiver.y);
 				var dif:Number = Math.sqrt(Math.pow(difPoint.x, 2) + Math.pow(difPoint.y, 2));
 				dif = dif * (1 + (Math.random() * fractionErrors[i]) - (fractionErrors[i] / 2));
-				//dif *= 1.05;
-				
-				
 				
 				var beacon:Beacon = beacons[i];
 				
@@ -155,7 +148,6 @@ package
 				beacon.clear();
 				beacon.setRadius(dif);
 			}
-			
 		}
 	}
 }

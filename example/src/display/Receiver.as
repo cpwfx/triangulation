@@ -1,4 +1,4 @@
-package  
+package display
 {
 	import flash.display.Sprite;
 	import flash.events.Event;

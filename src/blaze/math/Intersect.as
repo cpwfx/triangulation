@@ -1,4 +1,4 @@
-package  
+package blaze.math
 {
 	import flash.geom.Vector3D;
 	/**
@@ -8,7 +8,7 @@ package
 	public class Intersect 
 	{
 		public var points:Vector.<Vector3D> = new Vector.<Vector3D>();
-		public var intersections:Vector.<Intersection> = new Vector.<Intersection>();
+		public var intersections:Vector.<Vector3D> = new Vector.<Vector3D>();
 		private var averageIntersectionTarget:Vector3D = new Vector3D();
 		private var intersectionPoints:Vector.<IntersectionPoints> = new Vector.<IntersectionPoints>();
 		private var increase:Vector.<Boolean> = new Vector.<Boolean>();
@@ -19,18 +19,12 @@ package
 		
 		public var pointAverage:Vector3D = new Vector3D();
 		private var maxRetries:int = 40;
+		
+		private var certainty:Number = 0;
+		
 		public function Intersect() 
 		{
-			createIntersections();
-		}
-		
-		private function createIntersections():void 
-		{
-			/*for (var i:int = 0; i < 4; i++) 
-			{
-				var intersection:Intersection = new Intersection();
-				intersections.push(intersection);
-			}*/
+			
 		}
 		
 		public function triangulate(position1:Vector3D, position2:Vector3D, position3:Vector3D):Vector3D 
@@ -56,10 +50,8 @@ package
 				pointAverage.y += vec[i].y;
 				pointAverage.z += vec[i].z;
 				
-				if (intersections.length <= i) intersections[i] = new Intersection();
+				if (intersections.length <= i) intersections[i] = new Vector3D();
 				if (increase.length <= i) increase[i] = false;
-				
-				
 			}
 			
 			pointAverage.x /= vec.length;
@@ -120,7 +112,8 @@ package
 			
 			for (var l:int = 0; l < points.length; l++) 
 			{
-				intersections[l].position = intersectionPoints[l].closestPoint;
+				intersections[l].x = intersectionPoints[l].closestPoint.x;
+				intersections[l].y = intersectionPoints[l].closestPoint.y;
 			}
 			
 			for (var m:int = 0; m < points.length; m++) 
@@ -147,18 +140,14 @@ package
 				averageIntersectionTarget.y /= divCount;
 			}
 			else if (method == Intersect.METHOD_ANGLE) {
-				//pointAverage
-				//var angles:Vector.<Number> = new Vector.<Number>();
 				var aveAngle:Number = 0;
 				var aveH:Number = 0;
 				for (var p:int = 0; p < points.length; p++) 
 				{
-					var difX:Number = pointAverage.x - intersections[p].x
-					var difY:Number = pointAverage.y - intersections[p].y
-					//angles[p] = Math.atan2(pointAverage.y - intersections[p].y, pointAverage.x - intersections[p].x) * 180 / Math.PI;
+					var difX:Number = (pointAverage.x - intersections[p].x);
+					var difY:Number = (pointAverage.y - intersections[p].y);
 					aveAngle += Math.atan2(difY, difX) * 180 / Math.PI;
 					aveH += Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2));
-					//trace("angles[p] = " + angles[p]);
 				}
 				aveAngle /= points.length;
 				aveH /= points.length;
@@ -166,6 +155,18 @@ package
 				averageIntersectionTarget.x = pointAverage.x + Math.cos((180 + aveAngle) / 180 * Math.PI) * aveH;
 				averageIntersectionTarget.y = pointAverage.y + Math.sin((180 + aveAngle) / 180 * Math.PI) * aveH;
 			}
+			
+			findCertainty();
+		}
+		
+		private function findCertainty():void 
+		{
+			certainty = 0;
+			for (var i:int = 0; i < intersectionPoints.length; i++) 
+			{
+				certainty += vecDif(intersectionPoints[i].closestPoint, averageIntersectionTarget);
+			}
+			certainty /= intersectionPoints.length;
 		}
 		
 		private function pickClosest(intersectionPointsVec:Vector.<IntersectionPoints>):void

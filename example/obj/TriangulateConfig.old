@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'21/06/2014'</value>
+      <value>'22/06/2014'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -32,12 +32,13 @@
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>C:\Users\pete\Desktop\triangulate\src</path-element>
+      <path-element>P:\Work\2014\Portfolio\triangulation\src</path-element>
+      <path-element>P:\Work\2014\Portfolio\triangulation\example\src</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>C:\Users\pete\Desktop\triangulate\src\Main.as</path-element>
+    <path-element>P:\Work\2014\Portfolio\triangulation\example\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>60</default-frame-rate>

@@ -1,4 +1,4 @@
-package  
+package display
 {
 	import flash.display.Sprite;
 	import flash.geom.Vector3D;
@@ -10,7 +10,6 @@ package
 	{
 		private var c:Sprite;
 		private var _position:Vector3D = new Vector3D();
-		//public var radius:Number;
 		private var colour:uint;
 		
 		public function Beacon(_position:Vector3D) 
@@ -56,6 +55,5 @@ package
 			}
 			
 		}
-		
 	}
 }
