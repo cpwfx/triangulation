@@ -7,38 +7,45 @@ package blaze.math
 	 */
 	public class Intersect 
 	{
-		public var points:Vector.<Vector3D> = new Vector.<Vector3D>();
-		public var intersections:Vector.<Vector3D> = new Vector.<Vector3D>();
-		private var averageIntersectionTarget:Vector3D = new Vector3D();
-		private var intersectionPoints:Vector.<IntersectionPoints> = new Vector.<IntersectionPoints>();
-		private var increase:Vector.<Boolean> = new Vector.<Boolean>();
+		public static var points:Vector.<Vector3D>;
+		public static var intersections:Vector.<Vector3D>;
+		private static var averageIntersectionTarget:Vector3D;
+		private static var intersectionPoints:Vector.<IntersectionPoints>;
+		private static var increase:Vector.<Boolean>;
 		
 		private static var METHOD_CENTER:int = 0;
 		private static var METHOD_ANGLE:int = 1;
-		private var method:int = Intersect.METHOD_CENTER;
+		private static var method:int = Intersect.METHOD_CENTER;
 		
-		public var pointAverage:Vector3D = new Vector3D();
-		private var maxRetries:int = 40;
+		public static var pointAverage:Vector3D;
+		private static var maxRetries:int = 40;
 		
-		private var certainty:Number = 0;
+		private static var certainty:Number = 0;
 		
 		public function Intersect() 
 		{
 			
 		}
 		
-		public function triangulate(position1:Vector3D, position2:Vector3D, position3:Vector3D):Vector3D 
+		public static function triangulate(position1:Vector3D, position2:Vector3D, position3:Vector3D):Vector3D 
 		{
 			return of(new <Vector3D>[position1, position2, position3]);
 		}
 		
-		public function quadulate(position1:Vector3D, position2:Vector3D, position3:Vector3D, position4:Vector3D):Vector3D 
+		public static function quadulate(position1:Vector3D, position2:Vector3D, position3:Vector3D, position4:Vector3D):Vector3D 
 		{
 			return of(new <Vector3D>[position1, position2, position3, position4]);
 		}
 		
-		public function of(vec:Vector.<Vector3D>):Vector3D 
+		public static function of(vec:Vector.<Vector3D>):Vector3D 
 		{
+			points = new Vector.<Vector3D>();
+			intersections = new Vector.<Vector3D>();
+			averageIntersectionTarget = new Vector3D();
+			intersectionPoints = new Vector.<IntersectionPoints>();
+			increase = new Vector.<Boolean>();
+			pointAverage = new Vector3D();
+			
 			pointAverage.x = 0;
 			pointAverage.y = 0;
 			pointAverage.z = 0;
@@ -64,7 +71,7 @@ package blaze.math
 			return averageIntersectionTarget;
 		}
 		
-		private function correctUnderPoweredSignals():void 
+		private static function correctUnderPoweredSignals():void 
 		{
 			for (var i:int = 0; i < points.length; i++) 
 			{
@@ -72,7 +79,7 @@ package blaze.math
 			}
 		}
 		
-		private function correctUnderPoweredSignal(pointA:Vector3D, pointB:Vector3D):void 
+		private static function correctUnderPoweredSignal(pointA:Vector3D, pointB:Vector3D):void 
 		{
 			var minDistance:Number = vecDif(pointA, pointB);
 			var signalDistance:Number = pointA.w + pointB.w;
@@ -84,7 +91,7 @@ package blaze.math
 			}
 		}
 		
-		private function updateTarget(tryCount:int):void 
+		private static function updateTarget(tryCount:int):void 
 		{
 			for (var i:int = 0; i < points.length; i++) 
 			{
@@ -159,7 +166,7 @@ package blaze.math
 			findCertainty();
 		}
 		
-		private function findCertainty():void 
+		private static function findCertainty():void 
 		{
 			certainty = 0;
 			for (var i:int = 0; i < intersectionPoints.length; i++) 
@@ -169,7 +176,7 @@ package blaze.math
 			certainty /= intersectionPoints.length;
 		}
 		
-		private function pickClosest(intersectionPointsVec:Vector.<IntersectionPoints>):void
+		private static function pickClosest(intersectionPointsVec:Vector.<IntersectionPoints>):void
 		{
 			
 			var dif1:Number = 0;
@@ -214,14 +221,14 @@ package blaze.math
 			}*/
 		}
 		
-		private function vecDif(point1:Vector3D, point2:Vector3D):Number 
+		private static function vecDif(point1:Vector3D, point2:Vector3D):Number 
 		{
 			var difX:Number = point1.x - point2.x;
 			var difY:Number = point1.y - point2.y;
 			return Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2));
 		}
 		
-		private function increaseSignalStrength(tryCount:int):void 
+		private static function increaseSignalStrength(tryCount:int):void 
 		{
 			for (var i:int = 0; i < points.length; i++) 
 			{
@@ -240,7 +247,7 @@ package blaze.math
 			updateTarget(tryCount);
 		}
 		
-		private function c2cIntersect(pointA:Vector3D, pointB:Vector3D):IntersectionPoints
+		private static function c2cIntersect(pointA:Vector3D, pointB:Vector3D):IntersectionPoints
 		{
 			var x0:Number = pointA.x;
 			var y0:Number = pointA.y;

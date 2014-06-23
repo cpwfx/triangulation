@@ -6,7 +6,7 @@
     <movie input="" />
     <movie path="bin\Triangulate.swf" />
     <movie fps="60" />
-    <movie width="800" />
+    <movie width="1080" />
     <movie height="600" />
     <movie version="4" />
     <movie minorVersion="0" />

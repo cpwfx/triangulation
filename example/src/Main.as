@@ -19,16 +19,15 @@ package
 	{
 		private var beacons:Vector.<Beacon>;
 		private var intersections:Vector.<Intersection> = new Vector.<Intersection>();
-		private var margin:Point = new Point(350, 250);
+		private var margin:Point = new Point(150, 150);
 		private var receiver:Receiver;
 		private var fractionErrors:Vector.<Number> = new <Number>[0.0,0.0,0.0,0.0];
 		private var updateEveryXFramesCount:int = -1;
-		private var updateEveryXFrames:int = 10;
+		private var updateEveryXFrames:int = 1;
 		private var averageIntersection:Intersection;
 		private var averageIntersectionTarget:Vector3D = new Vector3D();
-		private var crossProductSmoothing:int = 10;
-		private var signalSmoothing:int = 10;
-		private var intersect:Intersect = new Intersect();
+		private var crossProductSmoothing:int = 0;
+		private var signalSmoothing:int = 0;
 		
 		public function Main():void 
 		{
@@ -117,17 +116,17 @@ package
 				vec[m] = beacons[m].position;
 			}
 			
-			averageIntersectionTarget = intersect.of(vec);
+			averageIntersectionTarget = Intersect.of(vec);
 			
 			for (var j:int = 0; j < intersections.length; j++) 
 			{
-				intersections[j].position = intersect.intersections[j];
+				intersections[j].position = Intersect.intersections[j];
 			}
 			
-			for (var i:int = 0; i < intersect.intersections.length; i++) 
+			for (var i:int = 0; i < Intersect.intersections.length; i++) 
 			{
 				var beacon:Beacon = beacons[i];
-				beacon.setRadius(intersect.points[i].w, true);
+				beacon.setRadius(Intersect.points[i].w, true);
 			}
 		}
 		
