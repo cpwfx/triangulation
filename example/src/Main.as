@@ -10,6 +10,9 @@ package
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
+	import com.bit101.components.HUISlider;
+	import com.bit101.components.HSlider;
+	import com.bit101.components.HRangeSlider;
 	
 	/**
 	 * ...
@@ -21,13 +24,16 @@ package
 		private var intersections:Vector.<Intersection> = new Vector.<Intersection>();
 		private var margin:Point = new Point(150, 150);
 		private var receiver:Receiver;
-		private var fractionErrors:Vector.<Number> = new <Number>[0.0,0.0,0.0,0.0];
+		private var fractionErrors:Vector.<Number> = new <Number>[0,0,0,0];
 		private var updateEveryXFramesCount:int = -1;
 		private var updateEveryXFrames:int = 1;
 		private var averageIntersection:Intersection;
 		private var averageIntersectionTarget:Vector3D = new Vector3D();
-		private var crossProductSmoothing:int = 0;
-		private var signalSmoothing:int = 0;
+		private var crossProductSmoothing:int = 5;
+		private var signalSmoothing:int = 5;
+		private var hUISlider1:HUISlider;
+		private var hUISlider2:HUISlider;
+		private var hUISlider3:HUISlider;
 		
 		public function Main():void 
 		{
@@ -51,8 +57,38 @@ package
 			createIntersections();
 			createAverageIntersection();
 			
+			hUISlider1 = new HUISlider(this, 5, 5, "Signal Error Percent", OnSlider);
+			hUISlider1.maximum = 100;
+			hUISlider1.value = 0;
+			
+			hUISlider2 = new HUISlider(this, 5, hUISlider1.y + hUISlider1.height + 5, "Signal Smoothing", OnSignalAveSlider);
+			hUISlider2.maximum = 20;
+			hUISlider2.value = 5;
+			
+			hUISlider3 = new HUISlider(this, 5, hUISlider2.y + hUISlider2.height + 5, "CrossSection Smoothing", OnCrossSectionAveSlider);
+			hUISlider3.maximum = 20;
+			hUISlider3.value = 5;
+			
 			addEventListener(Event.ENTER_FRAME, Update);
 			//stage.addEventListener(MouseEvent.CLICK, OnClick);
+		}
+		
+		private function OnSlider(e:Event):void 
+		{
+			for (var i:int = 0; i < fractionErrors.length; i++) 
+			{
+				fractionErrors[i] = hUISlider1.value / 100;
+			}
+		}
+		
+		private function OnSignalAveSlider(e:Event):void 
+		{
+			signalSmoothing = hUISlider2.value;
+		}
+		
+		private function OnCrossSectionAveSlider(e:Event):void 
+		{
+			crossProductSmoothing = hUISlider3.value;
 		}
 		
 		private function OnClick(e:MouseEvent):void 
